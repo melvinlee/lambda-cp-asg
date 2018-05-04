@@ -102,3 +102,6 @@ ENV/
 
 # Serverless
 .serverless/
+
+# VS compiled
+.vscode/*
