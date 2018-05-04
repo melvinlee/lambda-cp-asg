@@ -10,6 +10,7 @@ package:
     - buildspec.yml
     - build.sh
     - LICENSE
+    - examples/**
 
 provider:
   name: aws
