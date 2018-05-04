@@ -28,9 +28,11 @@ In order to deploy the function simply run
 $ serverless deploy
 ```
 
-### How to schedule event
+### Trigger
 
-Simple add or remove cloudwatch schedule event to the function with the required parameters such as: `AsgGroupName`, `MinSize` and `DesiredCapacity`
+Simple add or remove cloudwatch schedule event in the serverless.yml with the required parameters: `AsgGroupName`, `MinSize` and `DesiredCapacity`
+
+For example:
 
 ```yml
 functions:
@@ -44,4 +46,7 @@ functions:
             AsgGroupName: sitapp-AutoScaleGrp-XL7APL96YQPQ
             MinSize: 0
             DesiredCapacity: 0
+     - schedule:
+          description: 'New event'
+          ...
 ```
