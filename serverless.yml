@@ -1,0 +1,48 @@
+service: lambda-cp-asg
+
+package:
+  exclude:
+    - node_modules/**
+    - README.md
+    - package.json
+    - package-lock.json
+    - yarn.lock
+    - buildspec.yml
+    - build.sh
+    - LICENSE
+
+provider:
+  name: aws
+  runtime: python3.6
+  stage: ${opt:stage, 'dev'}  
+  region: ap-southeast-1
+  
+  iamRoleStatements:
+      - Effect: Allow
+        Action: 
+          - autoscaling:UpdateAutoScalingGroup
+        Resource:
+          - "Fn::Join": ["" , ["arn:aws:autoscaling:" , {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":autoScalingGroup:*:autoScalingGroupName/*"]]
+
+functions:
+  scale-asg:
+    handler: handler.scale
+    memorySize: 512
+    timeout: 5
+    events:
+      - schedule: 
+          description: 'Scale-Up: Schedule at 9am GMT+8 Mon-Fri'
+          rate: cron(0 1 ? * MON-FRI *)
+          enabled: true
+          input:
+            AsgGroupName: sitapp-AutoScaleGrp-XL7APL96YQPQ
+            MinSize: 1
+            DesiredCapacity: 1
+      - schedule: 
+          description: 'Scale-Down: Schedule at 7pm GMT+8 Mon-Fri'
+          rate: cron(0 11 ? * MON-FRI *)
+          enabled: true
+          input:
+            AsgGroupName: sitapp-AutoScaleGrp-XL7APL96YQPQ
+            MinSize: 0
+            DesiredCapacity: 0
